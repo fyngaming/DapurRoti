@@ -1,5 +1,5 @@
-const CACHE_NAME = 'dapur-roti-pwa-v1';
-const APP_SHELL = ['/', '/manifest.webmanifest', '/icons/icon-192.png', '/icons/icon-512.png'];
+const CACHE_NAME = 'dapur-roti-laravel13-v2';
+const APP_SHELL = ['/manifest.webmanifest', '/icons/icon-192.png', '/icons/icon-512.png'];
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
@@ -26,30 +26,25 @@ self.addEventListener('fetch', (event) => {
   const url = new URL(request.url);
   if (url.origin !== self.location.origin) return;
 
-  // Never cache API, auth, or Vite dev HMR endpoints
+  // Never intercept API, auth, build assets, or Vite dev endpoints
   if (
     url.pathname.startsWith('/api/') ||
+    url.pathname.startsWith('/build/') ||
     url.pathname.startsWith('/@') ||
     url.pathname.includes('hot-update')
   ) {
     return;
   }
 
-  // Network-first for HTML navigation so users always get fresh pages
+  // Always network-first for HTML pages
   if (request.mode === 'navigate') {
     event.respondWith(
-      fetch(request)
-        .then((response) => {
-          const copy = response.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put(request, copy)).catch(() => {});
-          return response;
-        })
-        .catch(() => caches.match(request).then((cached) => cached || caches.match('/')))
+      fetch(request).catch(() => caches.match('/'))
     );
     return;
   }
 
-  // Stale-while-revalidate for static images, icons, CSS, JS
+  // Stale-while-revalidate for icons and static images
   event.respondWith(
     caches.match(request).then((cached) => {
       const fetchPromise = fetch(request)

@@ -1,6 +1,0 @@
-{
-  "name": "Dapur Roti Hajatan & Snack Box",
-  "description": "Website pemesanan Roti Hajatan dan Snack Box artisanal dengan Pre-Order DP 50%, integrasi WhatsApp otomatis, dan riwayat pesanan.",
-  "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
-}
