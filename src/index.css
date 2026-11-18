@@ -1,0 +1,87 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --bg-cream: #FFFDF9;
+    --bg-ivory: #FAF5EC;
+    --ink-brown: #5C3A21;
+    --ink-muted: #7C604C;
+    --accent-amber: #D97706;
+    --accent-amber-dark: #B45309;
+    --hairline: rgba(92, 58, 33, 0.12);
+  }
+
+  html {
+    scroll-behavior: smooth;
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    background-color: #FFFDF9;
+    color: #5C3A21;
+  }
+
+  h1, h2, h3, .font-display {
+    font-family: 'Fraunces', Georgia, serif;
+  }
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+/* PWA & Responsive View Mode Shell Rules */
+.app-shell-mobile-backdrop {
+  background: radial-gradient(circle at top, #F6EFE4 0%, #EAE0D0 100%);
+  min-height: 100dvh;
+}
+
+.app-shell-mobile-frame {
+  width: 100%;
+  max-width: 430px;
+  margin-left: auto;
+  margin-right: auto;
+  min-height: 100dvh;
+  background-color: #FFFDF9;
+  position: relative;
+}
+
+@media (min-width: 480px) {
+  .app-shell-mobile-frame {
+    box-shadow: 0 24px 60px -12px rgba(92, 58, 33, 0.22);
+    border-left: 1px solid rgba(92, 58, 33, 0.14);
+    border-right: 1px solid rgba(92, 58, 33, 0.14);
+  }
+}
+
+/* Force crisp single-column mobile layout inside Mobile Mode even on wide monitors */
+[data-view-mode='mobile'] .mode-grid-hero {
+  grid-template-columns: minmax(0, 1fr) !important;
+  gap: 1.25rem !important;
+}
+
+[data-view-mode='mobile'] .mode-grid-services {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 1rem !important;
+}
+
+[data-view-mode='mobile'] .mode-grid-catalog,
+[data-view-mode='mobile'] .mode-grid-steps,
+[data-view-mode='mobile'] .mode-grid-admin,
+[data-view-mode='mobile'] .admin-mobile-stack > section.grid {
+  grid-template-columns: minmax(0, 1fr) !important;
+}
+
+[data-view-mode='mobile'] .mode-stack-col {
+  flex-direction: column !important;
+  align-items: flex-start !important;
+}
+
+/* When a small phone switches explicitly to Desktop Mode */
+@media (max-width: 767px) {
+  [data-view-mode='desktop'] {
+    min-width: 1024px;
+    overflow-x: auto;
+  }
+}
+
+.safe-area-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}

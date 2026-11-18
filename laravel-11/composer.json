@@ -1,0 +1,19 @@
+{
+  "name": "dapur-roti/hajatan-snack-box",
+  "type": "project",
+  "description": "Backend Laravel 11 untuk Dapur Roti Hajatan & Snack Box",
+  "keywords": ["laravel", "framework", "bakery"],
+  "license": "MIT",
+  "require": {
+    "php": "^8.2",
+    "laravel/framework": "^11.0",
+    "laravel/socialite": "^5.16"
+  },
+  "autoload": {
+    "psr-4": {
+      "App\\": "app/",
+      "Database\\Factories\\": "database/factories/",
+      "Database\\Seeders\\": "database/seeders/"
+    }
+  }
+}
