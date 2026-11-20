@@ -1,5 +1,5 @@
 import { useEffect, useState, type FormEvent } from 'react';
-import { X } from 'lucide-react';
+import { Eye, EyeOff, X } from 'lucide-react';
 import type { User } from '../types/bakery';
 
 interface AuthModalProps {
@@ -21,6 +21,7 @@ export function AuthModal({
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [phone, setPhone] = useState('');
   const [error, setError] = useState<string | null>(initialError);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -295,15 +296,30 @@ export function AuthModal({
               >
                 Kata Sandi
               </label>
-              <input
-                id="auth-password"
-                type="password"
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Minimal 6 karakter"
-                className="w-full px-3.5 py-2.5 text-sm text-[#5C3A21] bg-white border border-[#5C3A21]/20 rounded-xl focus:outline-none focus:border-[#D97706]"
-              />
+              <div className="relative">
+                <input
+                  id="auth-password"
+                  type={showPassword ? 'text' : 'password'}
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Minimal 6 karakter"
+                  className="w-full pl-3.5 pr-10 py-2.5 text-sm text-[#5C3A21] bg-white border border-[#5C3A21]/20 rounded-xl focus:outline-none focus:border-[#D97706]"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((prev) => !prev)}
+                  title={showPassword ? 'Sembunyikan kata sandi' : 'Tampilkan kata sandi'}
+                  aria-label={showPassword ? 'Sembunyikan kata sandi' : 'Tampilkan kata sandi'}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-[#7C604C] hover:text-[#5C3A21] transition-colors rounded-lg focus:outline-none"
+                >
+                  {showPassword ? (
+                    <EyeOff className="w-4 h-4" aria-hidden="true" />
+                  ) : (
+                    <Eye className="w-4 h-4" aria-hidden="true" />
+                  )}
+                </button>
+              </div>
             </div>
 
             <button

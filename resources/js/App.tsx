@@ -324,6 +324,25 @@ export default function App() {
     [cart]
   );
 
+  const activeStore = useMemo(
+    () => stores.find((s) => s.id === selectedStoreId) ?? stores[0] ?? null,
+    [stores, selectedStoreId]
+  );
+
+  function handleSelectStore(storeId: number, scrollToCatalog = false) {
+    setSelectedStoreId(storeId);
+    try {
+      localStorage.setItem(SELECTED_STORE_STORAGE_KEY, String(storeId));
+    } catch {
+      // Ignore storage errors
+    }
+    if (scrollToCatalog) {
+      setTimeout(() => {
+        document.getElementById('katalog')?.scrollIntoView({ behavior: 'smooth' });
+      }, 40);
+    }
+  }
+
   function handleNavigate(view: 'home' | 'my-orders', sectionId?: string) {
     setActiveView(view);
     const targetPath = view === 'my-orders' ? '/my-orders' : '/';
@@ -451,25 +470,6 @@ export default function App() {
         onLogout={handleLogout}
       />
     );
-  }
-
-  const activeStore = useMemo(
-    () => stores.find((s) => s.id === selectedStoreId) ?? stores[0] ?? null,
-    [stores, selectedStoreId]
-  );
-
-  function handleSelectStore(storeId: number, scrollToCatalog = false) {
-    setSelectedStoreId(storeId);
-    try {
-      localStorage.setItem(SELECTED_STORE_STORAGE_KEY, String(storeId));
-    } catch {
-      // Ignore storage errors
-    }
-    if (scrollToCatalog) {
-      setTimeout(() => {
-        document.getElementById('katalog')?.scrollIntoView({ behavior: 'smooth' });
-      }, 40);
-    }
   }
 
   const isMobileMode = viewMode === 'mobile';

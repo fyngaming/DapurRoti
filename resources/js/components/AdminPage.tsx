@@ -3,6 +3,8 @@ import {
   CheckCircle2,
   Clock,
   ExternalLink,
+  Eye,
+  EyeOff,
   ImageIcon,
   Layers,
   Lock,
@@ -140,6 +142,7 @@ export function AdminPage({
   // Admin Login Form State
   const [loginEmail, setLoginEmail] = useState('');
   const [loginPassword, setLoginPassword] = useState('');
+  const [showLoginPassword, setShowLoginPassword] = useState(false);
   const [loginError, setLoginError] = useState<string | null>(null);
   const [isLoggingIn, setIsLoggingIn] = useState(false);
 
@@ -171,6 +174,7 @@ export function AdminPage({
   const [productDescription, setProductDescription] = useState('');
   const [productImage, setProductImage] = useState(IMAGE_PRESETS[1].url);
   const [productAvailable, setProductAvailable] = useState(true);
+  const [adminCategoryFilter, setAdminCategoryFilter] = useState<'all' | string>('all');
 
   // 2. Kelompok Barang Form State
   const [newCategoryName, setNewCategoryName] = useState('');
@@ -795,7 +799,7 @@ export function AdminPage({
 
   const tabs: { id: AdminTab; label: string; count: number | null; Icon: typeof Package }[] = [
     { id: 'orders', label: 'Pesanan', count: orders.length, Icon: PackageCheck },
-    { id: 'products', label: 'Barang & Varian', count: products.length, Icon: Package },
+    { id: 'products', label: 'Menu & Paket Penjualan', count: products.length, Icon: Package },
     { id: 'categories', label: 'Kelompok Barang', count: categories.length, Icon: Layers },
     { id: 'stores', label: 'Toko', count: stores.length, Icon: Store },
     { id: 'customers', label: 'Pelanggan', count: customers.length, Icon: Users },
@@ -865,15 +869,30 @@ export function AdminPage({
               >
                 Kata Sandi Admin
               </label>
-              <input
-                id="admin-password"
-                type="password"
-                required
-                value={loginPassword}
-                onChange={(e) => setLoginPassword(e.target.value)}
-                placeholder="Masukkan kata sandi pengelola"
-                className="w-full px-3.5 py-2.5 text-sm text-[#5C3A21] bg-white border border-[#5C3A21]/20 rounded-xl focus:outline-none focus:border-[#D97706]"
-              />
+              <div className="relative">
+                <input
+                  id="admin-password"
+                  type={showLoginPassword ? 'text' : 'password'}
+                  required
+                  value={loginPassword}
+                  onChange={(e) => setLoginPassword(e.target.value)}
+                  placeholder="Masukkan kata sandi pengelola"
+                  className="w-full pl-3.5 pr-10 py-2.5 text-sm text-[#5C3A21] bg-white border border-[#5C3A21]/20 rounded-xl focus:outline-none focus:border-[#D97706]"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowLoginPassword((prev) => !prev)}
+                  title={showLoginPassword ? 'Sembunyikan kata sandi' : 'Tampilkan kata sandi'}
+                  aria-label={showLoginPassword ? 'Sembunyikan kata sandi' : 'Tampilkan kata sandi'}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-[#7C604C] hover:text-[#5C3A21] transition-colors rounded-lg focus:outline-none"
+                >
+                  {showLoginPassword ? (
+                    <EyeOff className="w-4 h-4" aria-hidden="true" />
+                  ) : (
+                    <Eye className="w-4 h-4" aria-hidden="true" />
+                  )}
+                </button>
+              </div>
             </div>
 
             <button
@@ -1265,10 +1284,10 @@ export function AdminPage({
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <h2 className="font-display text-lg font-bold text-[#5C3A21]">
                   {editingProductId
-                    ? 'Edit Barang / Roti'
+                    ? 'Edit Menu / Paket Penjualan'
                     : productInputMode === 'csv'
-                      ? 'Import Barang via .CSV'
-                      : 'Tambah Barang / Roti'}
+                      ? 'Import Menu via .CSV'
+                      : 'Tambah Roti / Paket Penjualan'}
                 </h2>
                 {editingProductId ? (
                   <button
@@ -1318,7 +1337,7 @@ export function AdminPage({
               <form onSubmit={handleSaveProduct} className="space-y-3">
                 <div>
                   <label htmlFor="prod-name" className="block text-xs font-semibold text-[#5C3A21] mb-1">
-                    Nama Barang / Roti *
+                    Nama Roti / Paket Penjualan *
                   </label>
                   <input
                     id="prod-name"
@@ -1326,7 +1345,7 @@ export function AdminPage({
                     required
                     value={productName}
                     onChange={(e) => setProductName(e.target.value)}
-                    placeholder="Contoh: Roti Sobek Pandan Kelapa"
+                    placeholder="Contoh: Paket Box Hajatan Hemat / Roti Sobek Cokelat"
                     className="w-full px-3 py-2 text-xs sm:text-sm border border-[#5C3A21]/20 rounded-xl focus:outline-none focus:border-[#D97706]"
                   />
                 </div>
@@ -1334,7 +1353,7 @@ export function AdminPage({
                 <div className="grid grid-cols-2 gap-3">
                   <div>
                     <label htmlFor="prod-cat" className="block text-xs font-semibold text-[#5C3A21] mb-1">
-                      Kelompok Barang *
+                      Kelompok / Kategori *
                     </label>
                     <select
                       id="prod-cat"
@@ -1348,6 +1367,9 @@ export function AdminPage({
                         </option>
                       ))}
                     </select>
+                    <p className="mt-1 text-[10px] text-[#7C604C]">
+                      Pilih <strong>Paket Snack Box</strong> untuk paket penjualan.
+                    </p>
                   </div>
 
                   <div>
@@ -1458,46 +1480,96 @@ export function AdminPage({
                   className="w-full inline-flex items-center justify-center gap-1.5 py-2.5 px-4 text-xs sm:text-sm font-semibold text-white bg-[#D97706] hover:bg-[#B45309] rounded-xl transition-colors"
                 >
                   <Plus className="w-4 h-4" aria-hidden="true" />
-                  <span>{editingProductId ? 'Simpan Perubahan Barang' : 'Tambah Barang'}</span>
+                  <span>{editingProductId ? 'Simpan Perubahan' : 'Tambah Menu / Paket'}</span>
                 </button>
               </form>
               )}
             </div>
 
             <div className="lg:col-span-7 bg-white rounded-2xl border border-[#5C3A21]/12 overflow-hidden">
-              <div className="px-5 py-4 border-b border-[#5C3A21]/10 flex items-center justify-between">
+              <div className="px-5 py-4 border-b border-[#5C3A21]/10 flex flex-wrap items-center justify-between gap-3">
                 <h2 className="font-display text-lg font-bold text-[#5C3A21]">
-                  Daftar Barang &amp; Varian ({products.length})
+                  Daftar Menu &amp; Paket Penjualan ({products.length})
                 </h2>
+
+                <div className="inline-flex flex-wrap items-center p-1 bg-[#FAF5EC] border border-[#5C3A21]/15 rounded-xl gap-1">
+                  <button
+                    type="button"
+                    onClick={() => setAdminCategoryFilter('all')}
+                    className={`px-2.5 py-1 text-xs font-semibold rounded-lg transition-colors ${
+                      adminCategoryFilter === 'all'
+                        ? 'bg-[#5C3A21] text-white'
+                        : 'text-[#7C604C] hover:text-[#5C3A21]'
+                    }`}
+                  >
+                    Semua ({products.length})
+                  </button>
+                  {categories.map((c) => {
+                    const count = products.filter((p) => p.category === c.slug).length;
+                    const isSelected = adminCategoryFilter === c.slug;
+                    const isPaket = c.slug === 'paket';
+                    return (
+                      <button
+                        key={c.id}
+                        type="button"
+                        onClick={() => setAdminCategoryFilter(c.slug)}
+                        className={`px-2.5 py-1 text-xs font-semibold rounded-lg transition-colors ${
+                          isSelected
+                            ? isPaket
+                              ? 'bg-[#D97706] text-white shadow-xs'
+                              : 'bg-[#5C3A21] text-white'
+                            : isPaket
+                              ? 'text-[#D97706] font-bold hover:bg-[#D97706]/10'
+                              : 'text-[#7C604C] hover:text-[#5C3A21]'
+                        }`}
+                      >
+                        {c.name} ({count})
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
 
               <div className="divide-y divide-[#5C3A21]/10">
-                {products.map((product) => {
+                {(adminCategoryFilter === 'all'
+                  ? products
+                  : products.filter((p) => p.category === adminCategoryFilter)
+                ).map((product) => {
                   const catName =
                     categories.find((c) => c.slug === product.category)?.name ?? product.category;
+                  const isPaket = product.category === 'paket';
                   return (
                     <div
                       key={product.id}
                       data-testid={`admin-product-${product.id}`}
-                      className="p-4 flex items-start gap-4 hover:bg-[#FFFDF9]"
+                      className={`p-4 flex items-start gap-4 hover:bg-[#FFFDF9] ${
+                        isPaket ? 'bg-[#FFFDF9]/60' : ''
+                      }`}
                     >
                       <img
                         src={product.image}
                         alt={product.name}
                         referrerPolicy="no-referrer"
-                        className="w-16 h-16 rounded-xl object-cover bg-[#FAF5EC] shrink-0"
+                        className="w-16 h-16 rounded-xl object-cover bg-[#FAF5EC] shrink-0 border border-[#5C3A21]/10"
                       />
                       <div className="min-w-0 flex-1">
                         <div className="flex flex-wrap items-center justify-between gap-2">
-                          <h3 className="font-semibold text-sm text-[#5C3A21] truncate">
-                            {product.name}
-                          </h3>
+                          <div className="flex items-center gap-2 min-w-0">
+                            <h3 className="font-semibold text-sm text-[#5C3A21] truncate">
+                              {product.name}
+                            </h3>
+                            {isPaket && (
+                              <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-[#D97706]/15 text-[#D97706] border border-[#D97706]/30 shrink-0">
+                                Paket Penjualan
+                              </span>
+                            )}
+                          </div>
                           <span className="font-bold text-sm text-[#5C3A21] tabular-nums">
                             {formatRupiah(product.price)}
                           </span>
                         </div>
                         <div className="mt-1 flex flex-wrap items-center gap-1.5 text-[11px]">
-                          <span className="text-[#7C604C]">
+                          <span className="text-[#7C604C] font-medium">
                             {catName} · {product.is_available ? 'Aktif' : 'Nonaktif'}
                           </span>
                           <span
