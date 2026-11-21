@@ -36,7 +36,14 @@ export function Footer({ siteSettings, isMobileMode = false }: FooterProps) {
             {siteSettings.bankAccountHolder}
           </p>
           <p className="text-[#7C604C]">
-            © {new Date().getFullYear()} {siteSettings.brandName}. {siteSettings.footerCopyright}
+            © {new Date().getFullYear()} {siteSettings.brandName}. {siteSettings.footerCopyright}{' '}
+            <span aria-hidden="true">·</span>{' '}
+            <a
+              href="/dapur-admin"
+              className="hover:text-[#5C3A21] hover:underline underline-offset-2 transition-colors"
+            >
+              Portal Admin
+            </a>
           </p>
         </div>
       </div>

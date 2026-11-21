@@ -1,4 +1,4 @@
-const CACHE_NAME = 'dapur-roti-laravel13-v6';
+const CACHE_NAME = 'dapur-roti-laravel13-v7';
 const APP_SHELL = ['/manifest.webmanifest', '/icons/icon-192.png', '/icons/icon-512.png'];
 
 self.addEventListener('install', (event) => {

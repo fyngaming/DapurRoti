@@ -40,12 +40,18 @@ class AdminController extends Controller
 
     public function login(Request $request): JsonResponse
     {
-        $cleanEmail = strtolower(trim((string) $request->input('email', '')));
+        $loginInput = strtolower(trim((string) $request->input('email', $request->input('username', ''))));
         $cleanPassword = (string) $request->input('password', '');
 
         $user = User::query()
-            ->whereRaw('LOWER(email) = ?', [$cleanEmail])
             ->where('role', 'admin')
+            ->where(function ($q) use ($loginInput) {
+                $q->whereRaw('LOWER(email) = ?', [$loginInput])
+                    ->orWhereRaw('LOWER(name) = ?', [$loginInput]);
+                if ($loginInput === 'admin') {
+                    $q->orWhere('role', 'admin');
+                }
+            })
             ->first();
 
         if (! $user || ! $user->password || ! Hash::check($cleanPassword, $user->password)) {

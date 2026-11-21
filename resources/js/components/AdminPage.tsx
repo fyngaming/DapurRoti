@@ -849,15 +849,15 @@ export function AdminPage({
                 htmlFor="admin-email"
                 className="block text-xs font-semibold text-[#5C3A21] mb-1"
               >
-                Email Admin
+                Email / Username Admin
               </label>
               <input
                 id="admin-email"
-                type="email"
+                type="text"
                 required
                 value={loginEmail}
                 onChange={(e) => setLoginEmail(e.target.value)}
-                placeholder="admin@rotihajatan.id"
+                placeholder="admin atau admin@rotihajatan.id"
                 className="w-full px-3.5 py-2.5 text-sm text-[#5C3A21] bg-white border border-[#5C3A21]/20 rounded-xl focus:outline-none focus:border-[#D97706]"
               />
             </div>

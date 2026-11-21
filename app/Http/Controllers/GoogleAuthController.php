@@ -22,7 +22,7 @@ class GoogleAuthController extends Controller
             && $clientSecret !== 'YOUR_GOOGLE_CLIENT_SECRET';
 
         $redirectUri = trim((string) config('services.google.redirect', ''))
-            ?: $request->getSchemeAndHttpHost().'/api/auth/google/callback';
+            ?: 'http://localhost:3000/api/auth/google/callback';
 
         return [
             'client_id' => $clientId,

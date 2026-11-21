@@ -1,17 +1,17 @@
-import { LogOut, ShoppingBag } from 'lucide-react';
+import { LogOut, ShieldCheck, ShoppingBag } from 'lucide-react';
 import type { SiteSettings, User, ViewMode } from '../types/bakery';
 import { ViewModeSwitch } from './ViewModeSwitch';
 
 interface NavbarProps {
   user: User | null;
   siteSettings: SiteSettings;
-  activeView: 'home' | 'my-orders';
+  activeView: 'home' | 'my-orders' | 'dapur-admin';
   cartCount: number;
   viewMode: ViewMode;
   onChangeViewMode: (mode: ViewMode) => void;
   canInstallPwa?: boolean;
   onInstallPwa?: () => void;
-  onNavigate: (view: 'home' | 'my-orders', sectionId?: string) => void;
+  onNavigate: (view: 'home' | 'my-orders' | 'dapur-admin', sectionId?: string) => void;
   onOpenAuth: () => void;
   onOpenCartOrCheckout: () => void;
   onLogout: () => void;
@@ -90,7 +90,20 @@ export function Navbar({
             >
               Cara Pesan
             </a>
-            {user && (
+            {user?.role === 'admin' && (
+              <a
+                href="/dapur-admin"
+                onClick={(e) => {
+                  e.preventDefault();
+                  onNavigate('dapur-admin');
+                }}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-white bg-[#5C3A21] hover:bg-[#462B17] rounded-xl transition-colors whitespace-nowrap shadow-xs"
+              >
+                <ShieldCheck className="w-3.5 h-3.5 text-[#FDE68A]" aria-hidden="true" />
+                <span>Dashboard Admin</span>
+              </a>
+            )}
+            {user && user.role !== 'admin' && (
               <a
                 href="/my-orders"
                 onClick={(e) => {
@@ -133,13 +146,24 @@ export function Navbar({
             <div className="flex items-center gap-1.5 sm:gap-2.5">
               {!isMobile && (
                 <>
-                  <button
-                    type="button"
-                    onClick={() => onNavigate('my-orders')}
-                    className="md:hidden text-xs font-semibold text-[#5C3A21] underline underline-offset-4 whitespace-nowrap shrink-0 px-1 py-2"
-                  >
-                    Pesanan
-                  </button>
+                  {user.role === 'admin' ? (
+                    <button
+                      type="button"
+                      onClick={() => onNavigate('dapur-admin')}
+                      className="md:hidden inline-flex items-center gap-1 text-xs font-bold text-[#5C3A21] underline underline-offset-4 whitespace-nowrap shrink-0 px-1 py-2"
+                    >
+                      <ShieldCheck className="w-3.5 h-3.5 text-[#D97706]" aria-hidden="true" />
+                      <span>Admin</span>
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => onNavigate('my-orders')}
+                      className="md:hidden text-xs font-semibold text-[#5C3A21] underline underline-offset-4 whitespace-nowrap shrink-0 px-1 py-2"
+                    >
+                      Pesanan
+                    </button>
+                  )}
                   <div className="hidden sm:flex items-center gap-2">
                     {user.avatar && (
                       <img

@@ -1,11 +1,11 @@
-import { ClipboardList, Home, ShoppingBag, User as UserIcon, UtensilsCrossed } from 'lucide-react';
+import { ClipboardList, Home, ShieldCheck, ShoppingBag, User as UserIcon, UtensilsCrossed } from 'lucide-react';
 import type { User } from '../types/bakery';
 
 interface MobileBottomNavProps {
   user: User | null;
-  activeView: 'home' | 'my-orders';
+  activeView: 'home' | 'my-orders' | 'dapur-admin';
   cartCount: number;
-  onNavigate: (view: 'home' | 'my-orders', sectionId?: string) => void;
+  onNavigate: (view: 'home' | 'my-orders' | 'dapur-admin', sectionId?: string) => void;
   onOpenCartOrCheckout: () => void;
   onOpenAuth: () => void;
 }
@@ -69,17 +69,24 @@ export function MobileBottomNav({
         <button
           type="button"
           onClick={() => {
-            if (user) {
-              onNavigate('my-orders');
-            } else {
+            if (!user) {
               onOpenAuth();
+            } else if (user.role === 'admin') {
+              onNavigate('dapur-admin');
+            } else {
+              onNavigate('my-orders');
             }
           }}
           className={`flex flex-col items-center justify-center gap-1 text-[11px] font-semibold transition-colors ${
-            activeView === 'my-orders' ? 'text-[#D97706]' : 'text-[#7C604C] hover:text-[#5C3A21]'
+            activeView === 'my-orders' || activeView === 'dapur-admin' ? 'text-[#D97706]' : 'text-[#7C604C] hover:text-[#5C3A21]'
           }`}
         >
-          {user ? (
+          {user?.role === 'admin' ? (
+            <>
+              <ShieldCheck className="w-5 h-5" aria-hidden="true" />
+              <span>Admin</span>
+            </>
+          ) : user ? (
             <>
               <ClipboardList className="w-5 h-5" aria-hidden="true" />
               <span>Pesanan</span>

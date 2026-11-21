@@ -257,15 +257,15 @@ export function AuthModal({
                 htmlFor="auth-email"
                 className="block text-xs font-semibold text-[#5C3A21] mb-1"
               >
-                Alamat Email
+                {mode === 'login' ? 'Email atau Username' : 'Alamat Email'}
               </label>
               <input
                 id="auth-email"
-                type="email"
+                type={mode === 'login' ? 'text' : 'email'}
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="nama@email.com"
+                placeholder={mode === 'login' ? 'admin@rotihajatan.id atau username admin' : 'nama@email.com'}
                 className="w-full px-3.5 py-2.5 text-sm text-[#5C3A21] bg-white border border-[#5C3A21]/20 rounded-xl focus:outline-none focus:border-[#D97706]"
               />
             </div>

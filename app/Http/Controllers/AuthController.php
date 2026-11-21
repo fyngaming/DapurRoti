@@ -56,16 +56,25 @@ class AuthController extends Controller
 
     public function login(Request $request): JsonResponse
     {
-        $cleanEmail = strtolower(trim((string) $request->input('email', '')));
+        $loginInput = strtolower(trim((string) $request->input('email', $request->input('username', ''))));
         $cleanPassword = (string) $request->input('password', '');
 
-        if ($cleanEmail === '' || $cleanPassword === '') {
-            return response()->json(['message' => 'Email dan kata sandi wajib diisi.'], 422);
+        if ($loginInput === '' || $cleanPassword === '') {
+            return response()->json(['message' => 'Email/Username dan kata sandi wajib diisi.'], 422);
         }
 
-        $user = User::query()->whereRaw('LOWER(email) = ?', [$cleanEmail])->first();
+        $user = User::query()
+            ->where(function ($q) use ($loginInput) {
+                $q->whereRaw('LOWER(email) = ?', [$loginInput])
+                    ->orWhereRaw('LOWER(name) = ?', [$loginInput]);
+                if ($loginInput === 'admin') {
+                    $q->orWhere('role', 'admin');
+                }
+            })
+            ->first();
+
         if (! $user || ! $user->password || ! Hash::check($cleanPassword, $user->password)) {
-            return response()->json(['message' => 'Email atau kata sandi salah.'], 401);
+            return response()->json(['message' => 'Email/Username atau kata sandi salah.'], 401);
         }
 
         Auth::login($user, true);

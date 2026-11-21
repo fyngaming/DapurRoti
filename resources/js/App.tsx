@@ -300,6 +300,10 @@ export default function App() {
           const meData = await meRes.json();
           if (meData.user) {
             setUser(meData.user);
+            if (meData.user.role === 'admin' && activeView !== 'dapur-admin') {
+              handleNavigate('dapur-admin');
+              return;
+            }
             if (authStatus === 'google_success' && shouldOpenCheckout && loadSavedCart().length > 0) {
               setIsCheckoutOpen(true);
             }
@@ -343,9 +347,10 @@ export default function App() {
     }
   }
 
-  function handleNavigate(view: 'home' | 'my-orders', sectionId?: string) {
+  function handleNavigate(view: 'home' | 'my-orders' | 'dapur-admin', sectionId?: string) {
     setActiveView(view);
-    const targetPath = view === 'my-orders' ? '/my-orders' : '/';
+    const targetPath =
+      view === 'dapur-admin' ? '/dapur-admin' : (view === 'my-orders' ? '/my-orders' : '/');
     if (window.location.pathname !== targetPath) {
       window.history.pushState({}, '', targetPath);
     }
@@ -430,6 +435,10 @@ export default function App() {
   function handleAuthenticated(authenticatedUser: User) {
     setUser(authenticatedUser);
     setIsAuthOpen(false);
+    if (authenticatedUser.role === 'admin') {
+      handleNavigate('dapur-admin');
+      return;
+    }
     if (pendingCheckoutAfterAuth && cart.length > 0) {
       setPendingCheckoutAfterAuth(false);
       setIsCheckoutOpen(true);
